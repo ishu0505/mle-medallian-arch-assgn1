@@ -21,8 +21,8 @@ def process_labels_gold_table(snapshot_date_str, silver_loan_daily_directory, go
     snapshot_date = datetime.strptime(snapshot_date_str, "%Y-%m-%d")
     
     # connect to bronze table
-    partition_name = f"silver_loan_daily_{snapshot_date_str.replace('-', '_')}.parquet"
-    filepath = os.path.join(silver_loan_daily_directory, partition_name)
+    partition_name = "silver_loan_daily_" + snapshot_date_str.replace('-','_') + '.parquet'
+    filepath = silver_loan_daily_directory + partition_name
     df = spark.read.parquet(filepath)
     print('loaded from:', filepath, 'row count:', df.count())
 
@@ -38,8 +38,7 @@ def process_labels_gold_table(snapshot_date_str, silver_loan_daily_directory, go
 
     # save gold table - IRL connect to database to write
     partition_name = "gold_label_store_" + snapshot_date_str.replace('-','_') + '.parquet'
-    filepath = os.path.join(gold_label_store_directory, partition_name)
-    # filepath = gold_label_store_directory + partition_name
+    filepath = gold_label_store_directory + partition_name
     df.write.mode("overwrite").parquet(filepath)
     # df.toPandas().to_parquet(filepath,
     #           compression='gzip')
